@@ -1,0 +1,14 @@
+const Header = () => {
+    return (
+        <div className="header">
+            <div>
+                <h2>Canvas in React</h2>
+            </div>
+            <div>
+                <a href='https://github.com/ptifur/react-practice-bird' target="_blank" rel="noopener noreferrer">Source code</a>
+            </div>
+        </div>
+    )
+}
+
+export default Header
