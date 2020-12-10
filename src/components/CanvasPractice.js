@@ -87,7 +87,7 @@ const HandleKeypress = () => {
         <div className='container'>
             <canvas ref={canvasRef} width="350px" height="350px" onClick={changeMotionType} />
             <h3>Frame count: {counter}</h3>
-            <p>Motions type is {motionType}</p>
+            <p>Motion type is {motionType}</p>
             <button onClick={() => setShouldStop(!shouldStop)}>{ shouldStop ? 'Start' : 'Stop' }</button>
         </div>
     )
