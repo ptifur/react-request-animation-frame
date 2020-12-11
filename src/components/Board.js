@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import beep from '../sounds/beep.mp3'
-import bleep from '../sounds/bleep.mp3'
 import loose from '../sounds/loose.mp3'
 import { Howl, Howler } from 'howler'
 
@@ -9,11 +8,11 @@ const Board = () => {
     // get canvas
     const canvasRef = useRef()
 
+    // get button
     const buttonRef = useRef()
 
     // set frame counter
     const [counter, setCounter] = useState(0)
-    const [shouldStop, setShouldStop] = useState(true)
 
     // board dimentions
     const boardWidth = 600
@@ -35,7 +34,6 @@ const Board = () => {
 
     // update the counter
     useLayoutEffect(() => {
-        // if (!shouldStop) {
             let timerId
             const animate = () => {                
                 setCounter(c => c + 1)
@@ -43,7 +41,6 @@ const Board = () => {
             }
             timerId = requestAnimationFrame(animate)
             return () => cancelAnimationFrame(timerId)
-        // }
     }, [])
 
     const ballMovement = () => {
@@ -87,13 +84,13 @@ const Board = () => {
 
     // press button
     const restart = () => {
-        if (gameOver) setGameOver(false)
-        if (dx === 0 && dy === 0) {
-            setDx(-3)
-            setDy(1.2)
-
-            buttonRef.current.classList.add('grey')
-        }
+        if (gameOver) {
+            setScorePlayerOne(0)
+            setGameOver(false)
+        } 
+        setDx(-3)
+        setDy(1.2)
+        buttonRef.current.classList.add('grey')
     }
 
     const collidePlayer = () => {
@@ -111,34 +108,29 @@ const Board = () => {
         const context = canvas.getContext('2d')
 
         context.clearRect(0, 0, boardWidth, boardHeight)
+        context.fillStyle = '#555555'
 
         ballMovement()
         collideWall()
 
         collidePlayer()
 
-        if (scorePlayerOne >= 2) {
-            setScorePlayerOne(0)
+        if (scorePlayerOne > 5) {
             setGameOver(true)
         }
 
         // net
-        context.fillStyle = '#555555'
-
         for (let i = 0; i < 350; ++i) {
             context.fillRect(boardWidth / 2 - 3, 10 + i * 35, 6, 20)
         }
 
         // ball
-        context.fillStyle = '#555555'
         context.fillRect(positionX, positionY, 20, 20)
 
         // player 1
-        // context.fillStyle = '#cccccc'
         context.fillRect(20, playerY, 20, 60)
 
         // player 2
-        // context.fillStyle = '#cccccc'
         context.fillRect(boardWidth - 40, positionY - 20, 20, 60)
 
     }, [counter])
@@ -147,7 +139,6 @@ const Board = () => {
     useEffect(() => {
         const startWithKeyboard = ({ code }) => {
             if (code === 'Space') {
-                // setShouldStop(should => !should)
                 restart()
             }
         }
@@ -156,30 +147,30 @@ const Board = () => {
             document.removeEventListener('keypress', startWithKeyboard)
         }
 
-    }, [])
+    }, [gameOver])
 
     const getMouse = (event) => {
         setPlayerY(p => event.clientY * .55 - 80)
     }
 
-    // console.log(beep)
-
-    const playSound = (src) => {
-        const sound = new Howl({
-            src
-        })
+    const playSound = src => {
+        const sound = new Howl({ src })
         Howler.volume(.5)
         sound.play()
     }
 
     return (
         <div className='container' onMouseMove={getMouse}>
-            <canvas ref={canvasRef} width={boardWidth} height={boardHeight} />
-            {/* <h3>Frame count: {counter}</h3> */}
-            {/* { gameOver ? 'Game over' : `Your score is ${scorePlayerOne}`} */}
-            { gameOver ? 'Game over' : ''} { gameOver ? '' : `Your score is ${scorePlayerOne}`}
+            <div className='containerCanvas'>
+                <canvas ref={canvasRef} width={boardWidth} height={boardHeight} />
+                <div className='score left'>{scorePlayerOne}</div>
+                <div className='score right'>0</div>
+            </div>
+
+            <div className='caption'>{ gameOver ? 'Game over!' : ''}</div>
+            
             <div>
-                <button onClick={restart} ref={buttonRef}>{(scorePlayerOne === 0) ? 'Start' : 'Resume'}</button>
+                <button onClick={restart} ref={buttonRef}>Play</button>
             </div>
         </div>
     )

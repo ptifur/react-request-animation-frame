@@ -8,8 +8,6 @@ Poung branch
 
 - Random direction at the start
 
-- Gameover state / message
-
 ## UI
 
 - Position score over the board
@@ -17,3 +15,11 @@ Poung branch
 - Mute button
 
 - Disable button
+
+- Collision different angle
+
+- Login in separate components
+
+## Issues
+
+- Gameover state / message does not update with keyboard
