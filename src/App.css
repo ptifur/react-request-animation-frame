@@ -13,10 +13,11 @@
 
 .header {
     height: 80px;
-    width: 60vw;
+    width: 60%;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: auto;
 }
 
 a {
@@ -33,6 +34,9 @@ a:hover {
     justify-content: center;
     flex-direction: column;
     gap: 4.5vh;
+    height: 100%;
+    width: 100vw;
+    background: #fcfcfc;
 }
 
 button {
@@ -47,6 +51,10 @@ button {
 
 button:hover {
     background: #fe7575;
+}
+
+.grey {
+    background: #cdcdcd;
 }
 
 canvas {
