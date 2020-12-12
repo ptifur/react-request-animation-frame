@@ -4,17 +4,17 @@ Poung branch
 
 *December 2020*
 
-## Todo
+## Done
 
 1. ~~Collision different angle~~
 
 2. ~~Inscrease speed~~
 
-3. Random direction at the start
+3. ~~Random direction at the start~~
 
 4. ~~AI loose~~
 
-## Extra
+## Todo
 
 - Mute button
 
@@ -22,6 +22,10 @@ Poung branch
 
 Try Tetris by Thomas
 
+## Issues
+
 - On high speed the ball gets stuck
 
 - When you press space the ball resets on the fly
+
+- Two sounds when Computer loses. Wrong volume
