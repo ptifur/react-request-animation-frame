@@ -19,17 +19,22 @@ const Board = () => {
     const boardWidth = 600
     const boardHeight = 350
 
-    // ball position and speed
+    // ball position
     const [positionX, setPositionX] = useState(boardWidth / 2 - 80)
     const [positionY, setPositionY] = useState(boardHeight / 2 - 10)
 
+    // velocity
     const [dx, setDx] = useState(0)
     const [dy, setDy] = useState(0)
 
+    const [ballSpeed, setBallSpeed] = useState(5)
+
     // player position and score
     const [playerY, setPlayerY] = useState(165)
+    const [computerY, setComputerY] = useState(165)
 
-    const [scorePlayerOne, setScorePlayerOne] = useState(0)
+    const [scorePlayer, setScorePlayer] = useState(0)
+    const [scoreComputer, setScoreComputer] = useState(0)
     
     const [gameOver, setGameOver] = useState(false)
 
@@ -46,20 +51,22 @@ const Board = () => {
             return () => cancelAnimationFrame(timerId)
     }, [])
 
-    // update()
+    // update position
     const moveTheBall = () => {
         setPositionX(x => x += dx)
         setPositionY(y => y += dy)
     }
 
     const collideWall = () => {
-        if (positionX > boardWidth - 60) {
-            setDx(dxPrev => dxPrev * -1)
-            setPositionX(x => x - 10)
-            playSound(beep)
+        if (positionX >= boardWidth) {
+            setScoreComputer(c => c + 1)
+            reset()
         }
 
-        if (positionX <= 0) reset()
+        if (positionX <= 0) {
+            setScorePlayer(p => p + 1)
+            reset()
+        }
 
         if (positionY > boardHeight - 30) {
             setDy(dyPrev => dyPrev * -1)
@@ -81,35 +88,26 @@ const Board = () => {
 
         buttonRef.current.disabled = false
 
-        setScorePlayerOne(score => score + 1)
-
-        if (scorePlayerOne >= maxScore) {
-            playSound(gameover, 1)
-        } 
-        if (scorePlayerOne < maxScore) 
-        {
-            playSound(loose)
-        }
+        if (scorePlayer < maxScore) playSound(loose)
     }
+
+    // random direction
+    // this.ball.vel.x = 300 * (Math.random() > .5 ? 1 : -1)
+    // this.ball.vel.y = 150 * (Math.random() * 2 - 1)
 
     // SET DIRECTION HERE
     const restart = () => {
         if (gameOver) {
-            setScorePlayerOne(0)
+            setScorePlayer(0)
+            setScoreComputer(0)
             setGameOver(false)
         } 
 
-        setDx(-5)
-        setDy(1)
+        setDx(3 * (Math.random() > .5 ? 1 : -1))
+        setDy(5 * (Math.random() * 2 - 1))
 
         buttonRef.current.disabled = true
     }
-
-    // coll TOP
-    // positionY + 20 > playerY
-
-    // coll BOTTOM
-    // positionY < playerY + 60
 
     // SET COLLISION ANGLE HERE
     const collidePlayer = () => {
@@ -118,19 +116,46 @@ const Board = () => {
             playSound(beep)
 
             let collisionPoint = (positionY + 10) - (playerY + 30) // -30 ... 30
-
             collisionPoint = collisionPoint / 30 // -1 ... 1
 
             let angle = (Math.PI / 4) * collisionPoint
 
-            setDx(dxPrev => - dxPrev * Math.cos(angle))
+            setDx(ballSpeed * Math.cos(angle))
+            setDy(ballSpeed * Math.sin(angle))
 
-            setDy(dyPrev => dyPrev * Math.sin(angle))
+            setBallSpeed(ballSpeed + 0.2)
 
-            // console.log(dx, dy)
-
+            // console.log(ballSpeed)
         }
     }
+
+    const collideComputer = () => {
+        if (positionX > boardWidth - 60 && positionY + 20 > computerY && positionY < computerY + 60) {
+            setPositionX(x => x - 20)
+            setDx(dxPrev => dxPrev * -1)
+            playSound(beep)
+
+            // let collisionPoint = (positionY + 10) - (playerY + 30) // -30 ... 30
+            // collisionPoint = collisionPoint / 30 // -1 ... 1
+
+            // let angle = (Math.PI / 4) * collisionPoint
+
+            // setDx(ballSpeed * Math.cos(angle))
+            // setDy(ballSpeed * Math.sin(angle))
+
+            setBallSpeed(ballSpeed + 0.2)
+        }
+    }
+
+    // computer AI
+    const moveComputer = () => {
+        setComputerY(compY => compY += (positionY - (compY + 30)) * 0.01 )
+    }
+
+    // do I need separate useEffect for this sound
+    useEffect(() => {
+        if (gameOver) playSound(gameover, 1)        
+    }, [gameOver])
 
     // output graphics
     useEffect(() => {
@@ -143,9 +168,11 @@ const Board = () => {
 
         collideWall()
         collidePlayer()
+        collideComputer()
+        moveComputer()
         moveTheBall()
 
-        if (scorePlayerOne > maxScore) {
+        if (scorePlayer > maxScore || scoreComputer > maxScore) {
             setGameOver(true)
         }
 
@@ -161,7 +188,7 @@ const Board = () => {
         context.fillRect(20, playerY, 20, 60)
 
         // player 2
-        context.fillRect(boardWidth - 40, positionY - 20, 20, 60)
+        context.fillRect(boardWidth - 40, computerY, 20, 60)
 
     }, [counter])
 
@@ -193,8 +220,8 @@ const Board = () => {
         <div className='container' onMouseMove={getMouse}>
             <div className='containerCanvas'>
                 <canvas ref={canvasRef} width={boardWidth} height={boardHeight} />
-                <div className='score left'>{scorePlayerOne}</div>
-                <div className='score right'>0</div>
+                <div className='score left'>{scorePlayer}</div>
+                <div className='score right'>{scoreComputer}</div>
             </div>
 
             <div className='caption'>{ gameOver ? 'Game over!' : '' }</div>

@@ -6,13 +6,13 @@ Poung branch
 
 ## Todo
 
-1. Collision different angle
+1. ~~Collision different angle~~
 
-2. Inscrease speed
+2. ~~Inscrease speed~~
 
 3. Random direction at the start
 
-4. AI loose
+4. ~~AI loose~~
 
 ## Extra
 
@@ -21,3 +21,7 @@ Poung branch
 - Logic in separate components
 
 Try Tetris by Thomas
+
+- On high speed the ball gets stuck
+
+- When you press space the ball resets on the fly
