@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import beep from '../sounds/beep.mp3'
 import loose from '../sounds/loose.mp3'
+import gameover from '../sounds/gameover.mp3'
 import { Howl, Howler } from 'howler'
 
 const Board = () => {
@@ -19,18 +20,20 @@ const Board = () => {
     const boardHeight = 350
 
     // ball position and speed
-    const [positionX, setPositionX] = useState(boardWidth / 2 - 60)
+    const [positionX, setPositionX] = useState(boardWidth / 2 - 80)
     const [positionY, setPositionY] = useState(boardHeight / 2 - 10)
 
     const [dx, setDx] = useState(0)
     const [dy, setDy] = useState(0)
 
-    // player posution and score
+    // player position and score
     const [playerY, setPlayerY] = useState(165)
 
     const [scorePlayerOne, setScorePlayerOne] = useState(0)
-
+    
     const [gameOver, setGameOver] = useState(false)
+
+    const maxScore = 2
 
     // update the counter
     useLayoutEffect(() => {
@@ -43,9 +46,10 @@ const Board = () => {
             return () => cancelAnimationFrame(timerId)
     }, [])
 
-    const ballMovement = () => {
-        setPositionX(x => x + dx)
-        setPositionY(y => y + dy)
+    // update()
+    const moveTheBall = () => {
+        setPositionX(x => x += dx)
+        setPositionY(y => y += dy)
     }
 
     const collideWall = () => {
@@ -67,37 +71,64 @@ const Board = () => {
         }
     }
 
-    // loose the ball
+    // RESTART POSITION
     const reset = () => {
-        setPositionX(boardWidth / 2 - 60)
+        setPositionX(boardWidth / 2 - 80)
         setPositionY(boardHeight / 2 - 10)
         
         setDx(0)
         setDy(0)
 
-        buttonRef.current.classList.remove('grey')
+        buttonRef.current.disabled = false
 
         setScorePlayerOne(score => score + 1)
 
-        playSound(loose)
+        if (scorePlayerOne >= maxScore) {
+            playSound(gameover, 1)
+        } 
+        if (scorePlayerOne < maxScore) 
+        {
+            playSound(loose)
+        }
     }
 
-    // press button
+    // SET DIRECTION HERE
     const restart = () => {
         if (gameOver) {
             setScorePlayerOne(0)
             setGameOver(false)
         } 
-        setDx(-3)
-        setDy(1.2)
-        buttonRef.current.classList.add('grey')
+
+        setDx(-5)
+        setDy(1)
+
+        buttonRef.current.disabled = true
     }
 
+    // coll TOP
+    // positionY + 20 > playerY
+
+    // coll BOTTOM
+    // positionY < playerY + 60
+
+    // SET COLLISION ANGLE HERE
     const collidePlayer = () => {
-        if (positionX < 40 && positionY > playerY && positionY < playerY + 60) {
-            setDx(dxPrev => dxPrev * -1)
+        if (positionX < 40 && positionY + 20 > playerY && positionY < playerY + 60) {
             setPositionX(x => x + 10)
             playSound(beep)
+
+            let collisionPoint = (positionY + 10) - (playerY + 30) // -30 ... 30
+
+            collisionPoint = collisionPoint / 30 // -1 ... 1
+
+            let angle = (Math.PI / 4) * collisionPoint
+
+            setDx(dxPrev => - dxPrev * Math.cos(angle))
+
+            setDy(dyPrev => dyPrev * Math.sin(angle))
+
+            // console.log(dx, dy)
+
         }
     }
 
@@ -110,12 +141,11 @@ const Board = () => {
         context.clearRect(0, 0, boardWidth, boardHeight)
         context.fillStyle = '#555555'
 
-        ballMovement()
         collideWall()
-
         collidePlayer()
+        moveTheBall()
 
-        if (scorePlayerOne > 5) {
+        if (scorePlayerOne > maxScore) {
             setGameOver(true)
         }
 
@@ -153,9 +183,9 @@ const Board = () => {
         setPlayerY(p => event.clientY * .55 - 80)
     }
 
-    const playSound = src => {
+    const playSound = (src, volume = .35) => {
         const sound = new Howl({ src })
-        Howler.volume(.5)
+        Howler.volume(volume)
         sound.play()
     }
 
@@ -167,7 +197,7 @@ const Board = () => {
                 <div className='score right'>0</div>
             </div>
 
-            <div className='caption'>{ gameOver ? 'Game over!' : ''}</div>
+            <div className='caption'>{ gameOver ? 'Game over!' : '' }</div>
             
             <div>
                 <button onClick={restart} ref={buttonRef}>Play</button>

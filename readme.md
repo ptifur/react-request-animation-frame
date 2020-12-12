@@ -6,20 +6,18 @@ Poung branch
 
 ## Todo
 
-- Random direction at the start
+1. Collision different angle
 
-## UI
+2. Inscrease speed
 
-- Position score over the board
+3. Random direction at the start
+
+4. AI loose
+
+## Extra
 
 - Mute button
 
-- Disable button
+- Logic in separate components
 
-- Collision different angle
-
-- Login in separate components
-
-## Issues
-
-- Gameover state / message does not update with keyboard
+Try Tetris by Thomas

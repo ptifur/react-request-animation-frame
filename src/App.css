@@ -52,8 +52,9 @@ button:hover {
     background: #fe7575;
 }
 
-.grey {
+button:disabled {
     background: #cdcdcd;
+    cursor: auto;
 }
 
 canvas {
@@ -66,24 +67,19 @@ canvas {
 
 .score {
     position: absolute;
-    width: 100px;
     height: 100px;
+    top: 20px;
     color: #555555;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 2.5em;
     font-family: 'Open Sans', 'Courier New', Courier, monospace;
 }
 
 .left {
-    top: 0;
-    left: 18%;
+    left: 23%;
 }
 
 .right {
-    top: 0;
-    right: 18%;
+    right: 23%;
 }
 
 .caption {
