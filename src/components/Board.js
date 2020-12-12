@@ -88,12 +88,8 @@ const Board = () => {
 
         buttonRef.current.disabled = false
 
-        if (scorePlayer < maxScore) playSound(loose)
+        if (scorePlayer < maxScore && scoreComputer < maxScore) playSound(loose)
     }
-
-    // random direction
-    // this.ball.vel.x = 300 * (Math.random() > .5 ? 1 : -1)
-    // this.ball.vel.y = 150 * (Math.random() * 2 - 1)
 
     // SET DIRECTION HERE
     const restart = () => {

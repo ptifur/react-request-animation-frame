@@ -5,7 +5,7 @@ const Header = () => {
                 <h2>Poung in React</h2>
             </div>
             <div>
-                <a href='https://github.com/ptifur/react-request-animation-frame' target="_blank" rel="noopener noreferrer">Source code</a>
+                <a href='https://github.com/ptifur/react-request-animation-frame/tree/poung' target="_blank" rel="noopener noreferrer">Source code</a>
             </div>
         </div>
     )
