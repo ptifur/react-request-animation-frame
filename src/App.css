@@ -20,6 +20,11 @@
     margin: auto;
 }
 
+.nav {
+    display: flex;
+    align-items: center;
+}
+
 a {
     color: #bbbbbb;
 }
@@ -55,6 +60,18 @@ button:hover {
 button:disabled {
     background: #cdcdcd;
     cursor: auto;
+}
+
+.headerButton {
+    background: #afb8c4;
+    margin-right: 28px;
+    padding: 5px 26px;
+    font-size: 1.1em;
+    letter-spacing: .25px;
+}
+
+.headerButton:hover {
+    background: #b5bfcb;
 }
 
 canvas {

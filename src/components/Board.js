@@ -4,7 +4,7 @@ import loose from '../sounds/loose.mp3'
 import gameover from '../sounds/gameover.mp3'
 import { Howl, Howler } from 'howler'
 
-const Board = () => {
+const Board = ({ muted }) => {
 
     // get canvas
     const canvasRef = useRef()
@@ -27,7 +27,7 @@ const Board = () => {
     const [dx, setDx] = useState(0)
     const [dy, setDy] = useState(0)
 
-    const [ballSpeed, setBallSpeed] = useState(5)
+    const [ballSpeed, setBallSpeed] = useState(3)
 
     // player position and score
     const [playerY, setPlayerY] = useState(165)
@@ -39,8 +39,6 @@ const Board = () => {
     const [gameOver, setGameOver] = useState(false)
 
     const maxScore = 2
-
-    const [muted, setMuted] = useState(false)
 
     // update the counter
     useLayoutEffect(() => {
@@ -99,6 +97,7 @@ const Board = () => {
             setScorePlayer(0)
             setScoreComputer(0)
             setGameOver(false)
+            setBallSpeed(3)
         } 
 
         setDx(3 * (Math.random() > .5 ? 1 : -1))
@@ -121,9 +120,7 @@ const Board = () => {
             setDx(ballSpeed * Math.cos(angle))
             setDy(ballSpeed * Math.sin(angle))
 
-            setBallSpeed(ballSpeed + 0.2)
-
-            // console.log(ballSpeed)
+            setBallSpeed(ballSpeed + 0.5)
         }
     }
 
@@ -133,21 +130,21 @@ const Board = () => {
             setDx(dxPrev => dxPrev * -1)
             playSound(beep)
 
-            // let collisionPoint = (positionY + 10) - (playerY + 30) // -30 ... 30
-            // collisionPoint = collisionPoint / 30 // -1 ... 1
+            let collisionPoint = (positionY + 10) - (computerY + 30) // -30 ... 30
+            collisionPoint = collisionPoint / 30 // -1 ... 1
 
-            // let angle = (Math.PI / 4) * collisionPoint
+            let angle = (Math.PI / 4) * collisionPoint
 
-            // setDx(ballSpeed * Math.cos(angle))
-            // setDy(ballSpeed * Math.sin(angle))
+            setDx(-ballSpeed * Math.cos(angle))
+            setDy(ballSpeed * Math.sin(angle))
 
-            setBallSpeed(ballSpeed + 0.2)
+            setBallSpeed(ballSpeed + 0.5)
         }
     }
 
     // computer AI
     const moveComputer = () => {
-        setComputerY(compY => compY += (positionY - (compY + 30)) * 0.01 )
+        setComputerY(compY => compY += (positionY - (compY + 30)) * 0.1 )
     }
 
     // do I need separate useEffect for this sound
@@ -223,11 +220,10 @@ const Board = () => {
                 <div className='score right'>{scoreComputer}</div>
             </div>
 
-            <div className='caption'>{ gameOver ? 'Game over!' : '' }</div>
+            <div className='caption'>{ gameOver ? 'Game over!' : `Game speed ${ballSpeed.toFixed(2)}` }</div>
             
             <div>
                 <button onClick={restart} ref={buttonRef}>Play</button>
-                <button onClick={() => setMuted(!muted)}>{muted ? 'Unmute' : 'Mute'}</button>
             </div>
         </div>
     )
