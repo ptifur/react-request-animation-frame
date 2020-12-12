@@ -40,6 +40,8 @@ const Board = () => {
 
     const maxScore = 2
 
+    const [muted, setMuted] = useState(false)
+
     // update the counter
     useLayoutEffect(() => {
             let timerId
@@ -207,6 +209,7 @@ const Board = () => {
     }
 
     const playSound = (src, volume = .35) => {
+        if (muted) return
         const sound = new Howl({ src })
         Howler.volume(volume)
         sound.play()
@@ -224,6 +227,7 @@ const Board = () => {
             
             <div>
                 <button onClick={restart} ref={buttonRef}>Play</button>
+                <button onClick={() => setMuted(!muted)}>{muted ? 'Unmute' : 'Mute'}</button>
             </div>
         </div>
     )

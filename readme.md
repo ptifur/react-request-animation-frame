@@ -6,7 +6,7 @@ Poung branch
 
 ## Todo
 
-- Mute button
+- Mute button to header
 
 - Logic in separate components
 
